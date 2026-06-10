@@ -127,8 +127,13 @@ enum Updater {
         let newApp = workDir.appendingPathComponent("CatBreak.app")
         guard fm.fileExists(atPath: newApp.path) else { throw UpdaterError.badArchive }
 
-        let destPath = Bundle.main.bundlePath
-        let destParent = (destPath as NSString).deletingLastPathComponent
+        // Resolve the real bundle path, undoing App Translocation if needed
+        // (a quarantined app runs from a read-only random mount, which we
+        // can't write to). The replacement strips quarantine, so subsequent
+        // launches run normally from the real location.
+        let destURL = realBundleURL()
+        let destPath = destURL.path
+        let destParent = destURL.deletingLastPathComponent().path
         guard fm.isWritableFile(atPath: destParent) else {
             await MainActor.run { showNotWritable(at: destPath) }
             return
@@ -159,6 +164,27 @@ enum Updater {
         try launch.run()
 
         await MainActor.run { NSApp.terminate(nil) }
+    }
+
+    /// The real on-disk bundle URL. When macOS App Translocation is active
+    /// (the app runs from a random read-only `/AppTranslocation/…` mount
+    /// because it's still quarantined), this asks the Security framework for
+    /// the original path so we can update the actual app in /Applications.
+    private static func realBundleURL() -> URL {
+        let current = Bundle.main.bundleURL
+        guard current.path.contains("/AppTranslocation/") else { return current }
+
+        typealias OriginalPathFn = @convention(c)
+            (CFURL, UnsafeMutablePointer<Unmanaged<CFError>?>?) -> Unmanaged<CFURL>?
+        guard let handle = dlopen("/System/Library/Frameworks/Security.framework/Security", RTLD_NOW),
+              let sym = dlsym(handle, "SecTranslocateCreateOriginalPathForURL") else {
+            return current
+        }
+        let resolve = unsafeBitCast(sym, to: OriginalPathFn.self)
+        if let result = resolve(current as CFURL, nil) {
+            return result.takeRetainedValue() as URL
+        }
+        return current
     }
 
     @discardableResult
@@ -210,7 +236,7 @@ enum Updater {
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
         alert.messageText = "Update needs write access"
-        alert.informativeText = "CatBreak couldn't replace itself at:\n\(path)\n\nMove CatBreak.app into your Applications folder (or your home folder) and try again."
+        alert.informativeText = "CatBreak couldn't replace itself at:\n\(path)\n\nQuit CatBreak and run this once in Terminal, then reopen it from Applications:\n\nxattr -dr com.apple.quarantine /Applications/CatBreak.app"
         alert.addButton(withTitle: "OK")
         alert.runModal()
     }
