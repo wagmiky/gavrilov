@@ -1,4 +1,4 @@
-@import "./tokens.css";
+/* ── UnWined — recreated 1:1 from the Figma frames (440×956 design space) ── */
 
 * {
   box-sizing: border-box;
@@ -13,11 +13,12 @@ body,
 }
 
 body {
-  background: #0b0f1e;
-  font-family: var(--font-ui);
-  color: var(--ink);
+  background: #0b0c14;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif;
+  color: #fff;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow: hidden;
 }
 
 button {
@@ -26,791 +27,189 @@ button {
   background: none;
   color: inherit;
   cursor: pointer;
+  padding: 0;
 }
 
-input {
+input,
+textarea {
   font-family: inherit;
 }
 
-/* ── Stage: full-bleed on phones, framed on desktop ─────────────── */
+/* ── Scaled design-space shell ──────────────────────────────────────
+   Every screen is laid out in absolute 440×956 coordinates (the Figma
+   frame size, iPhone 16 Pro Max) and scaled uniformly to the device. */
 
-.stage {
+.viewport {
   height: 100%;
   display: grid;
   place-items: center;
-  background:
-    radial-gradient(900px 600px at 20% 0%, rgba(77, 103, 183, 0.25), transparent 60%),
-    radial-gradient(800px 600px at 85% 100%, rgba(74, 37, 69, 0.35), transparent 60%),
-    #0b0f1e;
-}
-
-.phone-frame {
-  width: 393px;
-  height: 822px;
-  border-radius: 54px;
-  background: #06070d;
-  padding: 10px;
-  box-shadow:
-    0 40px 80px -30px rgba(0, 0, 0, 0.9),
-    0 0 0 1px rgba(255, 255, 255, 0.06);
-  position: relative;
-}
-
-.phone-screen {
-  width: 100%;
-  height: 100%;
-  border-radius: 44px;
   overflow: hidden;
-  position: relative;
-  display: flex;
-  flex-direction: column;
 }
 
-.island {
+.canvas {
+  width: 440px;
+  height: 956px;
+  position: relative;
+  overflow: hidden;
+  transform-origin: center center;
+  background: #fff;
+}
+
+/* desktop-only phone bezel */
+@media (min-width: 600px) {
+  .canvas {
+    border-radius: 60px;
+    box-shadow:
+      0 0 0 11px #06070d,
+      0 0 0 12px rgba(255, 255, 255, 0.08),
+      0 50px 100px -40px rgba(0, 0, 0, 0.9);
+  }
+  .canvas::after {
+    content: "";
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 126px;
+    height: 37px;
+    border-radius: 22px;
+    background: #06070d;
+    z-index: 99;
+    pointer-events: none;
+  }
+}
+
+/* ── Screen base ───────────────────────────────────────────────────
+   The signature backdrop from the frames: plum settling at the top,
+   periwinkle light rising from the bottom. Exact stops from Figma. */
+
+.fig {
   position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 118px;
-  height: 34px;
-  border-radius: 20px;
-  background: #06070d;
-  z-index: 40;
+  inset: 0;
+  background: radial-gradient(
+    956px at 220px 0px,
+    rgb(74, 37, 69) 8.12%,
+    rgb(49, 38, 78) 37.64%,
+    rgb(24, 39, 88) 67.17%,
+    rgb(37, 55, 111) 75.37%,
+    rgb(50, 71, 135) 83.58%,
+    rgb(77, 103, 183) 100%
+  );
+  animation: fig-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@media (max-width: 520px), (max-height: 860px) {
-  .stage {
-    place-items: stretch;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr);
-  }
-  .phone-frame {
-    width: 100%;
-    height: 100%;
-    border-radius: 0;
-    padding: 0;
-    box-shadow: none;
-  }
-  .phone-screen {
-    border-radius: 0;
-  }
-  .island {
-    display: none;
-  }
+.fig.white {
+  background: #fff;
+  color: #000;
 }
 
-/* ── App surface ────────────────────────────────────────────────── */
-
-.app {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-dawn);
-  position: relative;
-  overflow: hidden;
-}
-
-.app.side {
-  background: var(--bg-dawn-side);
-}
-
-/* status bar */
-.statusbar {
-  flex: 0 0 auto;
-  height: 56px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 0 28px 6px;
-  font-size: 15px;
-  font-weight: 600;
-  z-index: 30;
-}
-
-.statusbar .sigs {
-  display: flex;
-  gap: 7px;
-  align-items: center;
-}
-
-.statusbar svg {
-  display: block;
-}
-
-/* screen body */
-.screen {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 8px 24px calc(20px + env(safe-area-inset-bottom, 12px));
-  min-height: 0;
-  overflow-y: auto;
-  animation: rise var(--dur) var(--ease-settle) both;
-}
-
-@keyframes rise {
+@keyframes fig-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-.screen.center {
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+/* every positioned element inside a screen */
+.abs {
+  position: absolute;
 }
 
-/* ── Top bar (back + progress) ──────────────────────────────────── */
+/* ── Type helpers (exact Figma styles) ─────────────────────────────── */
 
-.topbar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 22px;
-  min-height: 36px;
-}
-
-.back-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--glass);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-  display: grid;
-  place-items: center;
-  color: var(--ink);
-  transition: transform var(--dur) var(--ease-settle), background var(--dur) var(--ease-settle);
-  flex: 0 0 auto;
-}
-
-.back-btn:active {
-  transform: scale(0.97);
-}
-
-.progress {
-  flex: 1;
-  display: flex;
-  gap: 5px;
-}
-
-.progress i {
-  height: 4px;
-  border-radius: 3px;
-  flex: 1;
-  background: rgba(255, 255, 255, 0.18);
-  transition: background var(--dur) var(--ease-settle);
-}
-
-.progress i.on {
-  background: #fff;
-}
-
-/* ── Type ───────────────────────────────────────────────────────── */
-
-.display {
-  font-family: var(--font-display);
+.serif {
+  font-family: "Instrument Serif", Georgia, serif;
   font-weight: 400;
-  font-size: var(--size-display);
-  line-height: 1.04;
-  letter-spacing: 0.01em;
-  text-wrap: balance;
 }
 
-.display.sm {
-  font-size: var(--size-display-sm);
+/* SF Pro Display is the UI font via the system stack (body default) */
+.sf {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif;
 }
 
-.sub {
-  font-size: var(--size-body);
-  line-height: 1.5;
-  color: var(--ink-dim);
-  text-wrap: pretty;
+.med {
+  font-weight: 500;
 }
 
-.eyebrow {
-  font-size: 13px;
+/* ── Status bar (62px design height) ───────────────────────────────── */
+
+.fstatus {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 38px 0 42px;
+  font-size: 17px;
   font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
+  z-index: 50;
 }
 
-.footnote {
-  font-size: var(--size-caption);
-  line-height: 1.45;
-  color: var(--ink-faint);
+.fstatus .sigs {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
-.stat-display {
-  font-size: var(--size-stat);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1;
+.fstatus svg {
+  display: block;
 }
 
-/* ── Buttons ────────────────────────────────────────────────────── */
+/* ── Shared primitives ─────────────────────────────────────────────── */
 
-.btn {
-  width: 100%;
+/* White pill CTA — 182×48, radius 50, SF Pro Medium 22, ink #232323 */
+.pill {
+  position: absolute;
   height: 48px;
-  border-radius: var(--r-pill);
+  border-radius: 50px;
+  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #232323;
+  font-size: 22px;
+  font-weight: 500;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  font-family: var(--font-ui);
-  font-weight: 500;
-  font-size: var(--size-button);
-  transition: transform var(--dur) var(--ease-settle), background var(--dur) var(--ease-settle);
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), opacity 240ms;
 }
 
-.btn:active {
+.pill:active {
   transform: scale(0.97);
 }
 
-.btn.primary {
-  background: #fff;
-  color: var(--btn-ink);
+.pill.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
-.btn.secondary {
-  background: var(--glass);
-  color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--hairline-strong);
-}
-
-.btn.ghost {
-  background: none;
-  color: var(--ink-faint);
-  font-size: 16px;
-  height: 40px;
-}
-
-.btn.urge {
-  background: var(--red);
+/* glass pill (secondary) */
+.pill.glass {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   color: #fff;
-  box-shadow: var(--glow-red), inset 0 0 0 1px rgba(255, 255, 255, 0.35);
-  height: 56px;
-  font-size: 20px;
-  font-weight: 600;
 }
 
-.cta-zone {
-  margin-top: auto;
-  padding-top: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-/* ── Glass cards & rows ─────────────────────────────────────────── */
-
-.glass {
-  background: var(--glass);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-  border-radius: var(--r-card);
-}
-
-.glass.feature {
-  border-radius: var(--r-feature);
-}
-
-.option-row {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  border-radius: var(--r-card);
-  background: var(--glass);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-  color: var(--ink);
-  text-align: left;
-  font-size: 16px;
-  font-weight: 500;
-  transition: transform var(--dur) var(--ease-settle), background var(--dur) var(--ease-settle),
-    box-shadow var(--dur) var(--ease-settle);
-}
-
-.option-row:active {
-  transform: scale(0.97);
-}
-
-.option-row .opt-sub {
-  display: block;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--ink-faint);
-  margin-top: 2px;
-}
-
-.option-row.selected {
-  background: var(--glass-hover);
-  box-shadow: inset 0 0 0 1px #fff, var(--glow-white);
-}
-
-.icon-well {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--r-chip);
-  background: var(--glass-strong);
-  display: grid;
-  place-items: center;
-  font-size: 19px;
-  flex: 0 0 auto;
-}
-
-.icon-well.round {
-  border-radius: 50%;
-}
-
-.option-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* scrim tag (chart labels, pills) */
-.tag {
+/* skip → link */
+.skiplink {
+  position: absolute;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 13px;
-  border-radius: var(--r-pill);
-  background: var(--scrim);
-  font-size: 13px;
-  font-weight: 500;
-  white-space: nowrap;
+  color: #fff;
+  font-size: 18px;
+  transition: opacity 240ms;
 }
 
-.tag .dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  flex: 0 0 auto;
+.skiplink:active {
+  opacity: 0.6;
 }
 
-.tag.blue {
-  box-shadow: inset 0 0 0 1px rgba(0, 136, 255, 0.6);
-}
-
-.tag.blue .dot {
-  background: var(--blue);
-  box-shadow: var(--glow-blue);
-}
-
-.tag.red {
-  box-shadow: inset 0 0 0 1px rgba(226, 50, 80, 0.6);
-}
-
-.tag.red .dot {
-  background: var(--red);
-  box-shadow: var(--glow-red);
-}
-
-/* ── Welcome ────────────────────────────────────────────────────── */
-
-.wordmark {
-  font-family: var(--font-display);
-  font-size: 26px;
-  letter-spacing: 0.02em;
-}
-
-.welcome-sparkle {
-  margin: 0 auto 28px;
-  filter: drop-shadow(0 0 18px rgba(255, 221, 25, 0.55));
-}
-
-/* ── Name input ─────────────────────────────────────────────────── */
-
-.name-input {
-  width: 100%;
-  margin-top: 28px;
-  padding: 16px 18px;
-  border: none;
-  border-radius: var(--r-card);
-  background: var(--glass);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-  color: var(--ink);
-  font-size: 22px;
-  font-family: var(--font-ui);
-  outline: none;
-  text-align: center;
-  transition: box-shadow var(--dur) var(--ease-settle);
-}
-
-.name-input::placeholder {
-  color: var(--ink-faint);
-}
-
-.name-input:focus {
-  box-shadow: inset 0 0 0 1px var(--hairline-strong);
-}
-
-/* ── Social proof (tour 26) ─────────────────────────────────────── */
-
-.avatars {
-  display: flex;
-  justify-content: center;
-}
-
-.avatars span {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2.5px solid rgba(255, 255, 255, 0.9);
-  margin-left: -12px;
-  display: grid;
-  place-items: center;
-  font-size: 17px;
-  background: var(--glass-strong);
-}
-
-.avatars span:first-child {
-  margin-left: 0;
-}
-
-.stars {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  color: var(--gold);
-  font-size: 22px;
-  text-shadow: 0 0 12px rgba(255, 221, 25, 0.45);
-}
-
-/* ── Streak ring (tour 27 + home) ───────────────────────────────── */
-
-.ring-wrap {
-  display: grid;
-  place-items: center;
-  margin: 26px 0 18px;
-}
-
-.ring {
-  position: relative;
-  display: grid;
-  place-items: center;
-}
-
-.ring svg {
+.skiplink svg {
   display: block;
-}
-
-.ring .val {
-  position: absolute;
-  text-align: center;
-}
-
-.ring .val b {
-  display: block;
-  font-size: 56px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.ring .val small {
-  display: block;
-  margin-top: 4px;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.week {
-  display: flex;
-  justify-content: space-between;
-  gap: 6px;
-}
-
-.week i {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 13px;
-  font-weight: 600;
-  font-style: normal;
-  background: var(--glass);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-  color: var(--ink-faint);
-}
-
-.week i.done {
-  background: #fff;
-  color: var(--btn-ink);
-  box-shadow: var(--glow-white);
-}
-
-/* ── Tool list (tour 28) ────────────────────────────────────────── */
-
-.toollist {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.toollist .tool {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: var(--r-card);
-  background: var(--glass);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-  font-size: 15px;
-  font-weight: 500;
-}
-
-/* ── Lessons (tour 31) ──────────────────────────────────────────── */
-
-.lesson {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px;
-  border-radius: var(--r-card);
-  background: var(--glass);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-}
-
-.lesson + .lesson {
-  margin-top: 10px;
-}
-
-.lesson .n {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--r-chip);
-  background: #fff;
-  color: var(--btn-ink);
-  display: grid;
-  place-items: center;
-  font-weight: 600;
-  font-size: 17px;
-  flex: 0 0 auto;
-}
-
-.lesson .tx b {
-  display: block;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.lesson .tx span {
-  font-size: 13px;
-  color: var(--ink-faint);
-}
-
-.lesson.lock {
-  opacity: 0.55;
-}
-
-.lesson.lock .n {
-  background: var(--glass-strong);
-  color: var(--ink-dim);
-}
-
-/* ── Credibility (program based on) ─────────────────────────────── */
-
-.uni {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
-  border-radius: var(--r-card);
-  background: var(--glass);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-}
-
-.uni + .uni {
-  margin-top: 10px;
-}
-
-.uni .mark {
-  font-family: var(--font-display);
-  font-size: 21px;
-  letter-spacing: 0.01em;
-}
-
-.uni .field {
-  font-size: 13px;
-  color: var(--ink-faint);
-}
-
-/* ── Referral code (35) ─────────────────────────────────────────── */
-
-.codeboxes {
-  display: flex;
-  gap: 10px;
-  margin-top: 26px;
-}
-
-.codeboxes input {
-  flex: 1;
-  min-width: 0;
-  height: 64px;
-  border: none;
-  border-radius: var(--r-card);
-  background: var(--glass);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-  color: var(--ink);
-  text-align: center;
-  font-size: 26px;
-  font-weight: 600;
-  outline: none;
-  text-transform: uppercase;
-  caret-color: #fff;
-  transition: box-shadow var(--dur) var(--ease-settle);
-}
-
-.codeboxes input:focus {
-  box-shadow: inset 0 0 0 1px #fff, var(--glow-white);
-}
-
-/* ── Two-paths divergence chart ─────────────────────────────────── */
-
-.paths-wrap {
-  position: relative;
-  margin: 26px 0 10px;
-}
-
-.paths-wrap svg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.paths-labels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 6px;
-}
-
-/* ── Projection stats (36) ──────────────────────────────────────── */
-
-.stat-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 15px 16px;
-  border-radius: var(--r-card);
-  background: var(--glass);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-}
-
-.stat-row + .stat-row {
-  margin-top: 10px;
-}
-
-.stat-row .lab {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.stat-row .num {
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-/* ── Urge support: breathing ────────────────────────────────────── */
-
-.breath-wrap {
-  position: relative;
-  display: grid;
-  place-items: center;
-  margin: 30px 0;
-}
-
-.breath-circle {
-  width: 170px;
-  height: 170px;
-  border-radius: 50%;
-  background: var(--glass);
-  box-shadow: inset 0 0 0 1px var(--hairline-strong), var(--glow-white);
-  animation: breathe 8s var(--ease-settle) infinite;
-}
-
-@keyframes breathe {
-  0%,
-  100% {
-    transform: scale(0.78);
-  }
-  50% {
-    transform: scale(1);
-  }
-}
-
-.breath-timer {
-  position: absolute;
-  font-size: 44px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-
-/* ── Home / tracker ─────────────────────────────────────────────── */
-
-.home-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.home-streak {
-  text-align: center;
-  margin: 10px 0 4px;
-}
-
-.home-streak .label {
-  margin-top: 6px;
-  font-size: 13px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.home-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 18px;
-}
-
-.home-grid .cell {
-  padding: 14px;
-  border-radius: var(--r-card);
-  background: var(--glass);
-  box-shadow: inset 0 0 0 1px var(--hairline);
-}
-
-.home-grid .cell .v {
-  display: block;
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  margin-top: 8px;
-}
-
-.home-grid .cell .k {
-  font-size: 12.5px;
-  color: var(--ink-faint);
-}
-
-.home-grid .cell.gold .v {
-  color: var(--gold);
 }
