@@ -95,10 +95,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
 
-        let minutes = Int(remaining) / 60
-        let seconds = Int(remaining) % 60
-        statusItem.button?.title = String(format: "🐈 %02d:%02d", minutes, seconds)
-        nextBreakMenuItem.title = String(format: "Next break in %02d:%02d", minutes, seconds)
+        let text = Self.formatRemaining(remaining)
+        statusItem.button?.title = "🐈 \(text)"
+        nextBreakMenuItem.title = "Next break in \(text)"
+    }
+
+    /// Human-friendly countdown: "57 min" under an hour, "1 h 23 min" above.
+    /// Minutes round up so it never reads "0 min" while time remains.
+    static func formatRemaining(_ remaining: TimeInterval) -> String {
+        let totalMinutes = max(1, Int(ceil(remaining / 60)))
+        if totalMinutes >= 60 {
+            let hours = totalMinutes / 60
+            let minutes = totalMinutes % 60
+            return minutes == 0 ? "\(hours) h" : "\(hours) h \(minutes) min"
+        }
+        return "\(totalMinutes) min"
     }
 
     @objc private func takeBreakNow() {
