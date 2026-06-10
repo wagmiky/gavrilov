@@ -14,7 +14,11 @@ work until you've done your wellness checklist.
   - 👀 Look at something far away for 20 seconds (with a built-in 20s timer)
   - 🪑 Straighten your back & drop your shoulders
   - 🤸 Stand up and stretch
-- **Every two hours** it also adds: 💧 Sip some water.
+- **By default every two hours** it also adds: 💧 Sip some water.
+- **Adjustable in Settings…** (menu bar → Settings, or ⌘,): a slider sets the
+  break interval anywhere from **15 minutes to 2 hours** in 15-minute steps,
+  and you can choose to be reminded to sip water **every break, every 2, or
+  every 3 breaks**.
 - The overlay **only disappears after you tick every box** and press
   "Back to work!". Until then, the blur stays.
 - Works across multiple monitors (all screens are dimmed; the checklist shows
@@ -88,6 +92,7 @@ Or just run it directly during development with `swift run`.
 | `Sources/CatBreak/BreakView.swift` | Checklist UI shown during a break |
 | `Sources/CatBreak/PixelCatView.swift` | The pixel-art cat (it blinks!) |
 | `Sources/CatBreak/Updater.swift` | In-app "Check for Updates" + self-install |
+| `Sources/CatBreak/Settings.swift` | Preferences (interval slider, water frequency) |
 | `scripts/build_app.sh` | Builds the universal `.app` bundle |
 | `scripts/generate_icon.py` | Regenerates the app icon from the pixel grid |
 | `.github/workflows/build.yml` | CI: builds the app and publishes the release |

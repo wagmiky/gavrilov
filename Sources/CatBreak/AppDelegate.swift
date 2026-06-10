@@ -3,15 +3,12 @@ import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
 
-    /// A break fires every hour of work.
-    static let breakInterval: TimeInterval = 60 * 60
-    /// The water reminder is included on every 2nd break (i.e. every two hours).
-    static let waterEveryNBreaks = 2
+    private let settings = Settings.shared
 
     private var statusItem: NSStatusItem!
     private var nextBreakMenuItem: NSMenuItem!
     private var tickTimer: Timer?
-    private var nextBreakDate = Date().addingTimeInterval(AppDelegate.breakInterval)
+    private var nextBreakDate = Date().addingTimeInterval(Settings.shared.breakInterval)
     private var breaksTaken = 0
     private var breakInProgress = false
     private var overlays: [OverlayWindowController] = []
@@ -30,6 +27,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         tickTimer = timer
         tick()
 
+        // Reschedule the countdown whenever the user changes the interval.
+        settings.onIntervalChange = { [weak self] in
+            guard let self, !self.breakInProgress else { return }
+            self.nextBreakDate = Date().addingTimeInterval(self.settings.breakInterval)
+            self.tick()
+        }
+
         // Quietly check for a newer build a few seconds after launch;
         // only prompts if an update is actually available.
         DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
@@ -39,6 +43,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func checkForUpdates() {
         Updater.checkForUpdates(userInitiated: true)
+    }
+
+    @objc private func openSettings() {
+        SettingsWindowController.shared.show()
     }
 
     private func buildMenu() {
@@ -59,6 +67,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(.separator())
 
+        let settingsItem = NSMenuItem(title: "Settings…", action: #selector(openSettings), keyEquivalent: ",")
+        settingsItem.target = self
+        menu.addItem(settingsItem)
+
         let update = NSMenuItem(title: "Check for Updates…", action: #selector(checkForUpdates), keyEquivalent: "u")
         update.target = self
         menu.addItem(update)
@@ -73,8 +85,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard !breakInProgress else { return }
 
         // Clamp in case the system clock jumped backwards.
-        if nextBreakDate.timeIntervalSinceNow > Self.breakInterval {
-            nextBreakDate = Date().addingTimeInterval(Self.breakInterval)
+        if nextBreakDate.timeIntervalSinceNow > settings.breakInterval {
+            nextBreakDate = Date().addingTimeInterval(settings.breakInterval)
         }
 
         let remaining = nextBreakDate.timeIntervalSinceNow
@@ -96,7 +108,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func restartTimer() {
         guard !breakInProgress else { return }
-        nextBreakDate = Date().addingTimeInterval(Self.breakInterval)
+        nextBreakDate = Date().addingTimeInterval(settings.breakInterval)
         tick()
     }
 
@@ -111,7 +123,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ChecklistItem(emoji: "🪑", text: "Straighten your back & drop your shoulders"),
             ChecklistItem(emoji: "🤸", text: "Stand up and stretch"),
         ]
-        if breaksTaken % Self.waterEveryNBreaks == 0 {
+        if breaksTaken % settings.waterEveryNBreaks == 0 {
             items.append(ChecklistItem(emoji: "💧", text: "Sip some water"))
         }
 
@@ -133,7 +145,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         overlays.forEach { $0.close() }
         overlays.removeAll()
         breakInProgress = false
-        nextBreakDate = Date().addingTimeInterval(Self.breakInterval)
+        nextBreakDate = Date().addingTimeInterval(settings.breakInterval)
         tick()
     }
 }
