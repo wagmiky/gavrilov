@@ -1,0 +1,39 @@
+name: Build macOS app
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build CatBreak.app
+        run: bash scripts/build_app.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CatBreak
+          path: build/CatBreak.zip
+
+      - name: Publish "latest" release
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/claude/mac-wellness-tracker-app-1us11i'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: CatBreak (latest build)
+          body: |
+            🐈 Pixel-cat wellness reminders for your Mac.
+
+            **Install:** download `CatBreak.zip`, unzip, drag `CatBreak.app` to Applications.
+            Since the app is not notarized, on first launch run:
+            `xattr -dr com.apple.quarantine /Applications/CatBreak.app`
+            then open it normally. See the README for details.
+          files: build/CatBreak.zip
