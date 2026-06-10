@@ -41,6 +41,22 @@ struct BreakView: View {
                     .fill(Color.white.opacity(0.12))
             )
 
+            if !allDone {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        checked = Set(items.map(\.id))
+                    }
+                } label: {
+                    Text("Check all  ✓")
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.9))
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 8)
+                        .background(Capsule().fill(Color.white.opacity(0.15)))
+                }
+                .buttonStyle(.plain)
+            }
+
             Button(action: onComplete) {
                 Text(allDone ? "Back to work!  ✅" : "Finish the checklist first, hooman 🐾")
                     .font(.system(size: 17, weight: .semibold, design: .rounded))
