@@ -24,6 +24,11 @@ The menu bar menu also lets you take a break early, restart the timer, or quit.
 
 ## Download & install
 
+> **No Xcode required.** The release zip contains a fully compiled app —
+> GitHub's build servers compile it on every push. Your Mac just needs
+> macOS 13 Ventura or newer. Xcode is only needed if you want to build
+> from source yourself (see below).
+
 1. Go to the [**latest release**](../../releases/latest) and download `CatBreak.zip`
    (or grab the `CatBreak` artifact from the latest run on the
    [Actions tab](../../actions)).
