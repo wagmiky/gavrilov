@@ -35,5 +35,8 @@ jobs:
             **Install:** download `CatBreak.zip`, unzip, drag `CatBreak.app` to Applications.
             Since the app is not notarized, on first launch run:
             `xattr -dr com.apple.quarantine /Applications/CatBreak.app`
-            then open it normally. See the README for details.
-          files: build/CatBreak.zip
+            then open it normally. After that, use **Check for Updates…** in the
+            menu bar to upgrade automatically. See the README for details.
+          files: |
+            build/CatBreak.zip
+            build/version.txt

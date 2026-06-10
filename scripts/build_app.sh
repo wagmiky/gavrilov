@@ -14,6 +14,13 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN" "$APP/Contents/MacOS/CatBreak"
 cp packaging/Info.plist "$APP/Contents/Info.plist"
 
+# Bake the git commit into the bundle so the in-app updater can tell
+# whether a newer release exists, and publish the same id as version.txt.
+SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+/usr/libexec/PlistBuddy -c "Add :GitCommitSHA string $SHA" "$APP/Contents/Info.plist" 2>/dev/null \
+    || /usr/libexec/PlistBuddy -c "Set :GitCommitSHA $SHA" "$APP/Contents/Info.plist"
+printf '%s' "$SHA" > build/version.txt
+
 # Build the .icns icon from the committed 1024px pixel-cat PNG.
 if [ -f packaging/icon_1024.png ]; then
     ICONSET="build/AppIcon.iconset"

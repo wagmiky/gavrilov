@@ -29,6 +29,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         RunLoop.main.add(timer, forMode: .common)
         tickTimer = timer
         tick()
+
+        // Quietly check for a newer build a few seconds after launch;
+        // only prompts if an update is actually available.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+            Updater.checkForUpdates(userInitiated: false)
+        }
+    }
+
+    @objc private func checkForUpdates() {
+        Updater.checkForUpdates(userInitiated: true)
     }
 
     private func buildMenu() {
@@ -46,6 +56,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let restart = NSMenuItem(title: "Restart timer", action: #selector(restartTimer), keyEquivalent: "r")
         restart.target = self
         menu.addItem(restart)
+
+        menu.addItem(.separator())
+
+        let update = NSMenuItem(title: "Check for Updates…", action: #selector(checkForUpdates), keyEquivalent: "u")
+        update.target = self
+        menu.addItem(update)
 
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit CatBreak", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))

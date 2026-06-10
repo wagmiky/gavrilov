@@ -48,6 +48,26 @@ The menu bar menu also lets you take a break early, restart the timer, or quit.
 To launch it automatically when you log in: **System Settings → General →
 Login Items** → add CatBreak.
 
+## Updating
+
+CatBreak updates itself — no need to re-download and reinstall by hand:
+
+- Click the 🐈 menu bar icon → **Check for Updates…** (or just leave it
+  running; it checks quietly a few seconds after launch).
+- If a newer build exists, it asks to update. Click **Update Now** and the
+  app downloads the latest release, replaces itself, and reopens
+  automatically.
+
+It works by comparing the git commit baked into the running app against the
+`latest` release on GitHub. This requires the repository to be **public** so
+the app can read the release without a login token. (If you keep the repo
+private, the updater can't reach the download — make it public under
+**GitHub → repo → Settings → General → Danger Zone → Change visibility**.)
+
+> The very first install still needs the one-time quarantine step above
+> because it arrives through your browser. Every update after that is
+> handled in-app and is already de-quarantined for you.
+
 ## Build from source
 
 Requires macOS 13+ with Xcode command line tools:
@@ -67,6 +87,7 @@ Or just run it directly during development with `swift run`.
 | `Sources/CatBreak/OverlayWindowController.swift` | Full-screen blur/dim overlay windows |
 | `Sources/CatBreak/BreakView.swift` | Checklist UI shown during a break |
 | `Sources/CatBreak/PixelCatView.swift` | The pixel-art cat (it blinks!) |
+| `Sources/CatBreak/Updater.swift` | In-app "Check for Updates" + self-install |
 | `scripts/build_app.sh` | Builds the universal `.app` bundle |
 | `scripts/generate_icon.py` | Regenerates the app icon from the pixel grid |
 | `.github/workflows/build.yml` | CI: builds the app and publishes the release |
