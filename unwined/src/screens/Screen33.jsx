@@ -75,7 +75,7 @@ export default function Screen33({ next, back }) {
               borderRadius: '0 20px 20px 20px',
             }}
           />
-          <p className="abs" style={{ left: 92, top: q.bubble[1], fontSize: 18, fontWeight: 700, lineHeight: '35px', color: '#fff', whiteSpace: 'nowrap' }}>
+          <p className="abs" style={{ left: 92, top: q.bubble[1], fontSize: 17, fontWeight: 700, lineHeight: '35px', color: '#fff', whiteSpace: 'nowrap' }}>
             {q.title}
           </p>
           <p className="abs" style={{ left: 92, top: q.bubble[1] + 32, width: q.bodyW, fontSize: 17, lineHeight: '19px', color: '#fff' }}>

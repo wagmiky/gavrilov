@@ -154,7 +154,7 @@ export default function Screen17({ next, back, answers, setAnswer }) {
 
       {value > 0 ? (
         <>
-          <p className="abs med" style={{ left: 108, top: 716, width: 224, fontSize: 22, textAlign: 'center', color: '#fff', pointerEvents: 'none' }}>
+          <p className="abs med" style={{ left: 0, right: 0, top: 716, fontSize: 22, textAlign: 'center', color: '#fff', pointerEvents: 'none', whiteSpace: 'nowrap' }}>
             <span style={{ fontWeight: 300 }}>≈</span> {COMPARISONS.find(([max]) => value <= max)[1]}
           </p>
           <p className="abs" style={{ left: 0, right: 0, top: 744, textAlign: 'center', fontSize: 50, pointerEvents: 'none' }}>
