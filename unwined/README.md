@@ -1,8 +1,8 @@
 # UnWined — iPhone app (React)
 
-A pixel-faithful recreation of the UnWined onboarding + tracker flow as a
-mobile-first React app. Built from the UnWined design system (the "dawn"
-brand kit) and the final onboarding copy flow.
+A 1:1 recreation of the UnWined onboarding flow from the Figma file
+(page "Дизайн экранов", numbered frames 1–39 + 111), as a mobile-first
+React app.
 
 ## Run it
 
@@ -13,41 +13,33 @@ npm run build    # production build → dist/
 npm run preview  # serve the production build
 ```
 
-Open on a phone (or a ~393px viewport) for the native, full-bleed
-experience; on desktop the app renders inside an iPhone frame for preview.
+Every screen is laid out in the exact 440×956 coordinate space of the
+Figma frames and scaled uniformly to the device, so it renders
+pixel-faithfully on any phone; on desktop it sits in an iPhone bezel.
 
 ## The flow
 
-Welcome → path choice (quit / mindful) → name → quiz (goals, frequency,
-spend) → reassurance (frame 22) → feature tour (26 welcome + social proof,
-27 streak, 28 urge tools, 31 lessons) → science connector (32) →
-credibility ("our program is based on") → referral code (35) → insight
-("your answers tell a story") → the "2 paths" divergence chart → 90-day
-benefits projection (36) → tracker home with streak ring, money saved,
-empty calories avoided, aura farmed, and the Urge button (5-minute timer +
-guided breathing).
+Splash (1) → welcome (2) → name & age (3) → quiz: gender (4), source (5),
+weekly drinks (6), reasons (7), 8, 9, regret (10), day-after (11),
+how long (12), tried quitting (13) → encouragement variant 14-1/2/3 (routed
+by 13) → goal/path question (15, sets quit vs mindful) → motivations (16) →
+spend wheel (17, includes the selected state from frame 18) → "2 paths"
+chart / "Hard truth" calendar (19-1 / 19-2 by path) → consequences map (20)
+→ habit loop (21) → "Clarity is closer" (22) → plans (23) → feature tour
+(26–31: welcome, streak ring, urge tools, friends & accountability,
+journaling/emotions, lessons) → science connector (32) → expert quotes (33)
+→ research credibility (34) → referral (35) → "Your life, but better."
+projection (36) → 37 → "No more excuses" (38) → slide to commit (39) →
+after-onboarding (111).
 
-Projection numbers are computed from the quiz answers (drinking frequency ×
-typical spend). Progress and answers persist in `localStorage`, so the app
-restores exactly where you left off; "Start over" on the home screen resets.
+All controls work: single-choice questions show the white selected state
+and auto-advance, multi-selects toggle, the spend wheel rotates by drag,
+and frame 39 is a real slide-to-commit. Answers (name, path, spend…)
+personalize later screens and persist in `localStorage`.
 
-## Design system
-
-Tokens live in `src/styles/tokens.css`, straight from the brand kit:
-
-- **Dawn gradient** background (periwinkle → navy → plum), full-bleed on
-  every screen; a sideways variant on the welcome hero.
-- **Instrument Serif** for display headlines (sentence case, ending in a
-  period); the SF Pro Display stack (`-apple-system`) for everything else.
-- **Glass surfaces**: `rgba(255,255,255,.08)` fill + 1px inset hairline —
-  no drop shadows; depth comes from hairlines and soft glows.
-- Accents with meaning: blue `#0088FF` (clarity), red `#E23250` (urges /
-  the old pattern), gold `#FFDD19` (milestones & sparkle).
-- White pill primary buttons, 48px tall, ink `rgb(35,35,35)`.
-- Motion: 240ms `cubic-bezier(0.22,1,0.36,1)` fades/rises, press scale 0.97,
-  no bounce.
-
-> Note: the shared Figma link contains the competitor-research board only;
-> the UnWined product frames live in a separate .fig. This build follows
-> the design-system readme and the onboarding copy-flow HTML for screen
-> content and visuals.
+Reference screenshots of every source frame live in `figma-refs/` for
+side-by-side comparison. `CONVENTIONS.md` documents the implementation
+rules. Designer placeholders in the frames ("Question Y", "лого") are
+resolved per flow position and the UnWined wordmark; placeholder frame 32
+uses the approved onboarding copy. Source typos ("Occasionaly",
+"unsucessfully", "San") are kept verbatim per the pixel-fidelity bar.
