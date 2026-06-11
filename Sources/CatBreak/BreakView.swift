@@ -13,6 +13,7 @@ struct ChecklistItem: Identifiable {
 /// every box is ticked.
 struct BreakView: View {
     let items: [ChecklistItem]
+    let onSnooze: () -> Void
     let onComplete: () -> Void
 
     @State private var checked: Set<UUID> = []
@@ -70,6 +71,16 @@ struct BreakView: View {
             .buttonStyle(.plain)
             .disabled(!allDone)
             .animation(.easeInOut(duration: 0.2), value: allDone)
+
+            if !allDone {
+                Button(action: onSnooze) {
+                    Text("Snooze 15 min 💤")
+                        .font(.system(size: 13, weight: .medium, design: .rounded))
+                        .foregroundColor(.white.opacity(0.6))
+                        .underline()
+                }
+                .buttonStyle(.plain)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

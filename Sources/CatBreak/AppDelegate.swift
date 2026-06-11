@@ -9,6 +9,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var nextBreakMenuItem: NSMenuItem!
     private var tickTimer: Timer?
     private var nextBreakDate = Date().addingTimeInterval(Settings.shared.breakInterval)
+    /// How much time the current countdown was given (interval + any
+    /// snoozes); the clock-jump clamp in tick() must respect snoozed time.
+    private var scheduledRemaining = Settings.shared.breakInterval
+    static let snoozeInterval: TimeInterval = 15 * 60
     private var breaksTaken = 0
     private var breakInProgress = false
     private var overlays: [OverlayWindowController] = []
@@ -30,8 +34,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Reschedule the countdown whenever the user changes the interval.
         settings.onIntervalChange = { [weak self] in
             guard let self, !self.breakInProgress else { return }
-            self.nextBreakDate = Date().addingTimeInterval(self.settings.breakInterval)
-            self.tick()
+            self.rescheduleFullInterval()
         }
 
         // Quietly check for a newer build a few seconds after launch;
@@ -61,6 +64,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         breakNow.target = self
         menu.addItem(breakNow)
 
+        let snooze = NSMenuItem(title: "Snooze 15 minutes", action: #selector(snoozeFromMenu), keyEquivalent: "s")
+        snooze.target = self
+        menu.addItem(snooze)
+
         let restart = NSMenuItem(title: "Restart timer", action: #selector(restartTimer), keyEquivalent: "r")
         restart.target = self
         menu.addItem(restart)
@@ -85,8 +92,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard !breakInProgress else { return }
 
         // Clamp in case the system clock jumped backwards.
-        if nextBreakDate.timeIntervalSinceNow > settings.breakInterval {
-            nextBreakDate = Date().addingTimeInterval(settings.breakInterval)
+        if nextBreakDate.timeIntervalSinceNow > scheduledRemaining {
+            nextBreakDate = Date().addingTimeInterval(scheduledRemaining)
         }
 
         let remaining = nextBreakDate.timeIntervalSinceNow
@@ -119,7 +126,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func restartTimer() {
         guard !breakInProgress else { return }
+        rescheduleFullInterval()
+    }
+
+    private func rescheduleFullInterval() {
+        scheduledRemaining = settings.breakInterval
         nextBreakDate = Date().addingTimeInterval(settings.breakInterval)
+        tick()
+    }
+
+    /// From the menu: delay the upcoming break by 15 minutes. If the break
+    /// overlay is already up, this dismisses it and re-fires in 15 minutes.
+    @objc private func snoozeFromMenu() {
+        if breakInProgress {
+            snoozeBreak()
+        } else {
+            nextBreakDate = nextBreakDate.addingTimeInterval(Self.snoozeInterval)
+            scheduledRemaining += Self.snoozeInterval
+            tick()
+        }
+    }
+
+    /// Dismiss the current break overlay and bring it back in 15 minutes.
+    /// The skipped break doesn't count towards the water cadence.
+    private func snoozeBreak() {
+        overlays.forEach { $0.close() }
+        overlays.removeAll()
+        breaksTaken -= 1
+        breakInProgress = false
+        scheduledRemaining = Self.snoozeInterval
+        nextBreakDate = Date().addingTimeInterval(Self.snoozeInterval)
         tick()
     }
 
@@ -142,7 +178,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         for screen in NSScreen.screens {
             let controller = OverlayWindowController(
                 screen: screen,
-                items: screen == mainScreen ? items : nil
+                items: screen == mainScreen ? items : nil,
+                onSnooze: { [weak self] in self?.snoozeBreak() }
             ) { [weak self] in
                 self?.endBreak()
             }
@@ -156,7 +193,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         overlays.forEach { $0.close() }
         overlays.removeAll()
         breakInProgress = false
-        nextBreakDate = Date().addingTimeInterval(settings.breakInterval)
-        tick()
+        rescheduleFullInterval()
     }
 }

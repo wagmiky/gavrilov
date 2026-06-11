@@ -15,7 +15,7 @@ final class OverlayWindowController {
 
     private let window: NSWindow
 
-    init(screen: NSScreen, items: [ChecklistItem]?, onComplete: @escaping () -> Void) {
+    init(screen: NSScreen, items: [ChecklistItem]?, onSnooze: @escaping () -> Void, onComplete: @escaping () -> Void) {
         window = OverlayWindow(
             contentRect: screen.frame,
             styleMask: .borderless,
@@ -42,7 +42,7 @@ final class OverlayWindowController {
 
         let content: NSView
         if let items {
-            content = NSHostingView(rootView: BreakView(items: items, onComplete: onComplete))
+            content = NSHostingView(rootView: BreakView(items: items, onSnooze: onSnooze, onComplete: onComplete))
         } else {
             content = NSHostingView(rootView: SecondaryScreenView())
         }

@@ -20,7 +20,9 @@ work until you've done your wellness checklist.
   and you can choose to be reminded to sip water **every break, every 2, or
   every 3 breaks**.
 - The overlay **only disappears after you tick every box** and press
-  "Back to work!". Until then, the blur stays.
+  "Back to work!". Until then, the blur stays. (Caught at a bad moment?
+  **Snooze 15 min** on the overlay — or "Snooze 15 minutes" in the menu —
+  postpones the break.)
 - Works across multiple monitors (all screens are dimmed; the checklist shows
   on your main screen).
 
