@@ -10,7 +10,7 @@ export default function Screen02({ next }) {
       <p className="abs serif" style={{ left: 30, top: 336, fontSize: 52, color: '#fff' }}>
         Welcome!
       </p>
-      <p className="abs" style={{ left: 30, top: 411, width: 337, fontSize: 32, lineHeight: 'normal', color: '#fff' }}>
+      <p className="abs" style={{ left: 30, top: 411, width: 368, fontSize: 32, lineHeight: 'normal', color: '#fff' }}>
         Let’s start by finding out about your relationship with alcohol.
       </p>
       {[0, 1, 2, 3, 4].map((i) => (

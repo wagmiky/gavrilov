@@ -103,6 +103,19 @@ textarea {
   color: #000;
 }
 
+/* Sideways dawn — plum anchored right-center, light at the far edges */
+.fig.side {
+  background: radial-gradient(
+    440px 800px at 440px 478px,
+    rgb(74, 37, 69) 8.12%,
+    rgb(49, 38, 78) 37.64%,
+    rgb(24, 39, 88) 67.17%,
+    rgb(37, 55, 111) 75.37%,
+    rgb(50, 71, 135) 83.58%,
+    rgb(77, 103, 183) 100%
+  );
+}
+
 /* Question screens: inverted dawn — light at the top, plum settling below */
 .fig.quiz {
   background: radial-gradient(
