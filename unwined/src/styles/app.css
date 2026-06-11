@@ -103,6 +103,19 @@ textarea {
   color: #000;
 }
 
+/* Question screens: inverted dawn — light at the top, plum settling below */
+.fig.quiz {
+  background: radial-gradient(
+    956px at 220px 0px,
+    rgb(77, 103, 183) 0%,
+    rgb(50, 71, 135) 17.9%,
+    rgb(37, 55, 111) 26.85%,
+    rgb(24, 39, 88) 35.8%,
+    rgb(49, 38, 78) 63.84%,
+    rgb(74, 37, 69) 91.88%
+  );
+}
+
 @keyframes fig-in {
   from {
     opacity: 0;

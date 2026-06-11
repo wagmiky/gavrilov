@@ -92,3 +92,38 @@ export function SkipLink({ y = 864, onClick, label = 'skip' }) {
     </button>
   )
 }
+
+// Recurring quiz header: back arrow, progress track, EN language chip.
+// Geometry from frame 3 (251:901); progress = 0..1 fill of the 272px track.
+export function QuizChrome({ back, progress = 0 }) {
+  return (
+    <>
+      <button className="abs" style={{ left: 31, top: 77, width: 20, height: 16 }} onClick={back} aria-label="back">
+        <svg width="20" height="15" viewBox="0 0 20 15" fill="none" style={{ display: 'block' }}>
+          <path d="M19 7.5H1m0 0L7.5 1M1 7.5 7.5 14" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+      <div className="abs" style={{ left: 67, top: 83, width: 272, height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.2)' }}>
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: Math.max(6, Math.round(272 * progress)),
+            height: 6,
+            borderRadius: 3,
+            background: '#fff',
+            transition: 'width 240ms cubic-bezier(0.22,1,0.36,1)',
+          }}
+        />
+      </div>
+      <div
+        className="abs"
+        style={{ left: 355, top: 75, width: 55, height: 22, borderRadius: 20, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.25)' }}
+      />
+      <p className="abs" style={{ left: 363, top: 77, fontSize: 14, color: '#fff' }}>
+        🇺🇸 EN
+      </p>
+    </>
+  )
+}

@@ -20,7 +20,6 @@ import Screen14C from './screens/Screen14C.jsx'
 import Screen15 from './screens/Screen15.jsx'
 import Screen16 from './screens/Screen16.jsx'
 import Screen17 from './screens/Screen17.jsx'
-import Screen18 from './screens/Screen18.jsx'
 import Screen19Quit from './screens/Screen19Quit.jsx'
 import Screen19Mindful from './screens/Screen19Mindful.jsx'
 import Screen20 from './screens/Screen20.jsx'
@@ -67,8 +66,8 @@ const FLOW = [
   ['14', (a) => (a.q13 === 'no' ? Screen14C : a.q13 === 'yes-successfully' ? Screen14B : Screen14A)],
   ['15', () => Screen15],
   ['16', () => Screen16],
+  // Frame 18 is the selected state of 17 (merged into Screen17).
   ['17', () => Screen17],
-  ['18', () => Screen18],
   ['19', (a) => (a.path === 'mindful' ? Screen19Mindful : Screen19Quit)],
   ['20', () => Screen20],
   ['21', () => Screen21],

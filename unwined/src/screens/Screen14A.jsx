@@ -1,12 +1,13 @@
-import { StatusBar, Pill } from '../components/Shell.jsx'
+import Screen14Base from './Screen14Base.jsx'
 
-// TODO: implement from Figma (placeholder stub)
-export default function Screen14A({ next, back, answers, setAnswer }) {
+// Figma 268:1544 "14-1" — after "Yes, unsucessfully" on screen 13.
+export default function Screen14A(props) {
   return (
-    <div className="fig">
-      <StatusBar />
-      <p className="abs serif" style={{ left: 30, top: 336, fontSize: 52, color: '#fff' }}>Screen 14A</p>
-      <Pill x={129} y={776} label="Next" onClick={next} />
-    </div>
+    <Screen14Base
+      {...props}
+      headline="That’s a good start!"
+      body="You’re already on the right track!"
+      lowerText="Only this time, you won’t be alone."
+    />
   )
 }
